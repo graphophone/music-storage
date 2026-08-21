@@ -20,4 +20,6 @@ impl Config {
 pub struct RustfsConfig {
     pub access_key: String,
     pub secret_key: String,
+    pub endpoint_url: String,
+    pub region: String,
 }
