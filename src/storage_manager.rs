@@ -1,7 +1,7 @@
 use anyhow::Result;
 use aws_config::{BehaviorVersion, Region};
-use aws_sdk_s3::{Client, config::Credentials};
-
+use aws_sdk_s3::{Client, config::Credentials, primitives::ByteStream};
+use uuid::Uuid;
 use crate::config;
 
 pub struct StorageManager {
@@ -30,7 +30,30 @@ impl StorageManager {
             .build();
 
         let rustfs_client = Client::from_conf(s3_config);
-
+        let buckets = rustfs_client.list_buckets().send().await?;
+        let music_bucket = buckets.buckets().iter()
+            .find(|&b| b.name == Some("music-bucket".to_string()));
+        match music_bucket {
+            Some(_) => (),
+            None => {
+                rustfs_client.create_bucket()
+                    .bucket("music-bucket")
+                    .send()
+                    .await?;
+            },
+        };
         Ok(StorageManager { client: rustfs_client })
+    }
+
+    pub async fn upload_audio(&self, file: &[u8]) -> Result<String> {
+        let key = Uuid::new_v4().to_string();
+        self.client
+            .put_object()
+            .bucket("music-bucket")
+            .key(&key)
+            .body(ByteStream::from(file.to_vec()))
+            .send()
+            .await?;
+        Ok(key)
     }
 }
