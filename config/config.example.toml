@@ -1,0 +1,5 @@
+[rustfs]
+access_key = "rustfsadmin"
+secret_key = "rustfsadmin"
+endpoint_url="http://localhost:19000"
+region="eu-west-1"
