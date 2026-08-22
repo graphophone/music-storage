@@ -1,19 +1,26 @@
+use std::sync::Arc;
+
 use anyhow::Result;
-use tokio::fs;
+use tonic::transport::Server;
+
+use crate::storage_service::{StorageService, storage::storage_server::StorageServer};
 
 pub mod config;
 mod storage_manager;
+mod storage_service;
 
 pub async fn run(conf: &config::Config) -> Result<()> {
-    println!("config:\n{:?}", conf);
-
-    let sm = storage_manager::StorageManager::build(&conf.rustfs)
+    let addr = format!("{}:{}", &conf.service.host, &conf.service.port).parse()?;
+    let storage_manager = storage_manager::StorageManager::build(&conf.rustfs)
         .await?;
-    println!("connected to rustfs!");
+    let storage_manager_arc = Arc::new(storage_manager);
+    let storage_service = StorageService::build(Arc::clone(&storage_manager_arc));
 
-    let file = fs::read("Cargo.toml").await?;
-    sm.upload_audio(&file[..]).await?;
-    println!("uploaded a file");
-
+    println!("storage service started on port {}", &conf.service.port);
+    Server::builder()
+        .add_service(StorageServer::new(storage_service))
+        .serve(addr)
+        .await?;
+    println!("storage service stopped");
     Ok(())
 }

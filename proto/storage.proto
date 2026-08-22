@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package storage;
+
+service Storage {
+    rpc UploadAudio(UploadAudioRequest) returns (UploadAudioResponse);
+}
+
+message UploadAudioRequest {
+    bytes audio = 1;
+}
+
+message UploadAudioResponse {
+    string key = 1;
+}
