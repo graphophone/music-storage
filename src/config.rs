@@ -3,9 +3,10 @@ use std::fs;
 use anyhow::Result;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct Config {
     pub rustfs: RustfsConfig,
+    pub service: ServiceConfig,
 }
 
 impl Config {
@@ -16,10 +17,16 @@ impl Config {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct RustfsConfig {
     pub access_key: String,
     pub secret_key: String,
     pub endpoint_url: String,
     pub region: String,
+}
+
+#[derive(Deserialize)]
+pub struct ServiceConfig {
+    pub host: String,
+    pub port: u16,
 }
