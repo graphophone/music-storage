@@ -1,0 +1,9 @@
+services:
+  music-storage:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "9832:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

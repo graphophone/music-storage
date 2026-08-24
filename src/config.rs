@@ -6,7 +6,6 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct Config {
     pub rustfs: RustfsConfig,
-    pub service: ServiceConfig,
 }
 
 impl Config {
@@ -23,10 +22,4 @@ pub struct RustfsConfig {
     pub secret_key: String,
     pub endpoint_url: String,
     pub region: String,
-}
-
-#[derive(Deserialize)]
-pub struct ServiceConfig {
-    pub host: String,
-    pub port: u16,
 }
