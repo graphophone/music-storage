@@ -10,13 +10,13 @@ mod storage_manager;
 mod storage_service;
 
 pub async fn run(conf: &config::Config) -> Result<()> {
-    let addr = format!("{}:{}", &conf.service.host, &conf.service.port).parse()?;
+    let addr = "0.0.0.0:8080".parse()?;
     let storage_manager = storage_manager::StorageManager::build(&conf.rustfs)
         .await?;
     let storage_manager_arc = Arc::new(storage_manager);
     let storage_service = StorageService::build(Arc::clone(&storage_manager_arc));
 
-    println!("storage service started on port {}", &conf.service.port);
+    println!("storage service started");
     Server::builder()
         .add_service(StorageServer::new(storage_service))
         .serve(addr)
