@@ -32,12 +32,12 @@ impl StorageManager {
         let rustfs_client = Client::from_conf(s3_config);
         let buckets = rustfs_client.list_buckets().send().await?;
         let music_bucket = buckets.buckets().iter()
-            .find(|&b| b.name == Some("music-bucket".to_string()));
+            .find(|&b| b.name == Some(conf.bucket.clone()));
         match music_bucket {
             Some(_) => (),
             None => {
                 rustfs_client.create_bucket()
-                    .bucket("music-bucket")
+                    .bucket(&conf.bucket)
                     .send()
                     .await?;
             },

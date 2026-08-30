@@ -1,9 +1,6 @@
 [rustfs]
 access_key = "rustfsadmin"
 secret_key = "rustfsadmin"
-endpoint_url="http://localhost:19000"
+endpoint_url="http://host.docker.internal:19000"
 region="eu-west-1"
-
-[service]
-host = "0.0.0.0"
-port = 9832
+bucket = "music-bucket"
